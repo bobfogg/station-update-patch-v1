@@ -1,25 +1,20 @@
-cat > /home/pi/modem_light.py <<- EOM
+cat > /home/pi/modem_light.py <<- 'EOM'
 # Check PPP session Python 2.7 (and yes, it does matter per urllib)
 import os
 import urllib2
 import json
 import RPi.GPIO as GPIO
-​
 _DIAG_A = 39
 _DIAG_B = 40
-​
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(_DIAG_A,GPIO.OUT)
 GPIO.setup(_DIAG_B,GPIO.OUT)
-​
 results = { 
      "ppp_instance": False,
      "ip": "0.0.0.0"
 }
-​
 # check for PPP
-​
 result = os.popen("ifconfig ppp0 | grep inet").read()
 if result == "": 
     results["ppp_instance"] = False
