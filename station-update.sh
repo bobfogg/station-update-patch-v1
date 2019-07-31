@@ -397,6 +397,7 @@ class BaseStation {
           // file access error - doesn't exist / bad perms  nothing to rotate
           this.record('no data file to rotate');
           console.error(err);
+          resolve(false);
           return;
         }
         let now = moment(new Date()).format('YYYY-MM-DD_HHmmss');
