@@ -37,11 +37,6 @@ def checkin():
       'sim': data.get('sim'),
       'imei': data.get('imei')
     },
-    'gps': {
-      'lat': -1,
-      'lng': -1,
-      'time': -1
-    },
     'module': getMeta(),
     'gps': getGps(),
     'beep_count': 0,
