@@ -19,10 +19,7 @@ def checkin():
   with open('/etc/station-id', 'r') as inFile:
     data = json.loads(inFile.read())
   postData = {
-    'modem': {
-      'sim': data.get('sim'),
-      'imei': data.get('imei')
-    },
+    'modem': data,
     'module': getMeta(),
     'gps': getGps(),
     'beep_count': 0,
@@ -61,9 +58,11 @@ def getGps():
       report = getGpsNext(gpsd)
     except Exception, exc:
       print exc
+    signal.alarm(0)
     print("gpsd.next() done")
-    latlontime = {"lat":None, "lon":None, "time":None}
     if report['class'] == 'TPV':
+      print "Found TPV GPS Class"
+      latlontime = {"lat":None, "lon":None, "time":None}
       for key in ('lat', 'lon', 'time'):
         try:
           latlontime[key] = report[key]
