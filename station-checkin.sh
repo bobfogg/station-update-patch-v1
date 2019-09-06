@@ -1,5 +1,4 @@
 cat > /home/pi/manual_checkin.py <<- 'EOM'
-import threading
 import json
 import os
 import httplib
