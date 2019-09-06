@@ -1,4 +1,3 @@
-cat > /home/pi/manual_checkin.py <<- 'EOM'
 import threading
 import json
 import os
@@ -132,7 +131,3 @@ def getCPUInfo():
   return serial, revision, hardware
 
 checkin()
-
-EOM
-chown pi:ip /home/pi/manual_checkin.py
-python /home/pi/manual_checkin.py
