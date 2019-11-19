@@ -81,3 +81,5 @@ persist
 #holdoff 600
 #nolog
 EOF
+
+reboot
