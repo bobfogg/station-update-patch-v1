@@ -1,4 +1,5 @@
 # install cmake for c project build tools
+sudo apt update
 sudo apt install -y cmake
 
 # blacklist modules so system doesn't lock up rtl-sdr as audio
