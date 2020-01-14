@@ -1,4 +1,4 @@
-cat <<EOF >/etc/udev/rules.d/15-station-modem.rules
+cat > /etc/udev/rules.d/15-station-modem.rules <<-'EOF'
 # Symlink for Station Modem
 
 # note bInterfaceNumber
