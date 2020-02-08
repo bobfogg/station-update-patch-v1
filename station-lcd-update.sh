@@ -3454,7 +3454,9 @@ EOMO
 BOOT_FILE="/boot/config.txt"
 COMMAND='dtparam=i2c0=on'
 MATCH='dtparam=i2c0'
+REBOOT=true
 
+grep -q "^$COMMAND" "$BOOT_FILE" && REBOOT=false
 grep -q "^$MATCH" "$BOOT_FILE" && sed -i "s/^$MATCH=.*/$COMMAND/" "$BOOT_FILE" || echo "$COMMAND" >> "$BOOT_FILE"
 
 cd /home/pi/ctt
@@ -3482,5 +3484,10 @@ WantedBy=multi-user.target
 EOM
 
 systemctl daemon-reload
-systemctl restart station-lcd
 systemctl enable station-lcd
+
+if "$REBOOT"; then
+  reboot
+else
+  systemctl restart station-lcd
+fi
