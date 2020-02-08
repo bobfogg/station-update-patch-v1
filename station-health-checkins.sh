@@ -10,6 +10,7 @@ cat > /home/pi/ctt/health_checkin.sh <<- EOM
 /usr/bin/python /home/pi/ctt//health_checkin.py
 EOM
 chmod +x /home/pi/ctt/health_checkin.sh
+chown pi:pi /home/pi/ctt/health_checkin.sh
 
 cat > /home/pi/ctt/health_checkin.py <<- EOM
 from __future__ import division
@@ -162,6 +163,7 @@ if __name__ == '__main__':
         # something went wrong trying to post the data
         pass
 EOM
+chmown pi:pi /home/pi/ctt/health_checkin.py
 
 # write a new cronjob if a cronjob for this script is not already running
 if grep -q health_checkin.sh /var/spool/cron/crontabs/pi; then
