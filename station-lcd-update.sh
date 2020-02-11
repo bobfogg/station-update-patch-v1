@@ -3574,7 +3574,8 @@ User=root
 PIDFile=/tmp/lcd-driver.pid
 
 ExecStart=/usr/bin/python /home/pi/ctt/LCD/SensorStationLCDUI.py
-Restart=on-abort
+Restart=always
+RestartSec=2
 
 [Install]
 WantedBy=multi-user.target
