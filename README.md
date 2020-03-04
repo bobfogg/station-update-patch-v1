@@ -17,3 +17,17 @@
 * writes a bash script that calls the python script - used in the cronjob
 * checks if a cronjob exists that calls the bash script - if it does not exist: add the script to run at 51 minutes after the hour
 * runs the script to checkin at the time update is applied
+
+## station-lcd-update.sh
+* enable i2c0 bus if not enabled in /boot/config.txt
+* copies LCD python driver code to /home/pi/ctt/ as base 64
+* decode base64 file to tar.bz2 file
+* decompress compressed archive
+* delete compressed file / base64 file
+* daemonize LCD driver as systemd script  station-lcd.service
+* enable on boot; restart driver on crash;
+* reboot if i2c0 bus was modified or enabled
+### manage systemd script
+`sudo systemctl [start|stop|restart|status] station-lcd`
+### view station lcd log
+`journalct -u station-lcd`

@@ -10,6 +10,7 @@ cat > /home/pi/ctt/health_checkin.sh <<- EOM
 /usr/bin/python /home/pi/ctt//health_checkin.py
 EOM
 chmod +x /home/pi/ctt/health_checkin.sh
+chown pi:pi /home/pi/ctt/health_checkin.sh
 
 cat > /home/pi/ctt/health_checkin.py <<- EOM
 from __future__ import division
@@ -35,30 +36,6 @@ GPIO.setwarnings(False)
 # configure GPIO mode
 
 GPIO.setmode(GPIO.BCM)
-
-# Configure I2C accessories
-# This section will try to import I2C libraries. smcbus will throw an I/O exception if it is not found.
-
-_sensor_environment = 0
-
-# Check for environmental sensor (altimeter + humidity + temperatuare + VOC)
-
-try: 
-  sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
-  _sensor_environment = 1
-except:
-  _sensor_environment = 0
-
-#configure bme680 if it was found
-
-if _sensor_environment == 1:
-  sensor.set_humidity_oversample(bme680.OS_2X)
-  sensor.set_pressure_oversample(bme680.OS_4X)
-  sensor.set_temperature_oversample(bme680.OS_8X)
-  sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
-  sensor.set_gas_heater_temperature(320)
-  sensor.set_gas_heater_duration(150)
-  sensor.select_gas_heater_profile(0)
 
 # Configure ADC
 
@@ -186,6 +163,7 @@ if __name__ == '__main__':
         # something went wrong trying to post the data
         pass
 EOM
+chmown pi:pi /home/pi/ctt/health_checkin.py
 
 # write a new cronjob if a cronjob for this script is not already running
 if grep -q health_checkin.sh /var/spool/cron/crontabs/pi; then
