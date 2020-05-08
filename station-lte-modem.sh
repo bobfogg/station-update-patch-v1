@@ -8,11 +8,13 @@ SUBSYSTEMS=="usb", ENV{.LOCAL_ifNum}="$attr{bInterfaceNumber}"
 SUBSYSTEM=="tty", ACTION=="add", \
 	ATTRS{idVendor}=="1e2d", ATTRS{idProduct}=="005b", \
 	ENV{.LOCAL_ifNum}=="00", SYMLINK+="station_modem"
+
+SUBSYSTEM=="tty", ACTION=="add", \
+	ATTRS{idVendor}=="1e2d", ATTRS{idProduct}=="005b", \
+	ENV{.LOCAL_ifNum}=="02", SYMLINK+="station_modem_status"
 EOF
 
-cat <<EOF > /etc/chatscripts/simcom-chat-connect
-# Tested on Huawei Module's
-# See http://consumer.huawei.com/solutions/m2m-solutions/en/products/support/application-guides/detail/mu509-65-en.htm?id=82047
+cat <<EOF > /etc/chatscripts/twilio
 # Exit executition if module receives any of the following strings:
 ABORT 'BUSY'
 ABORT 'NO CARRIER'
@@ -22,31 +24,79 @@ ABORT 'NO ANSWER'
 ABORT 'DELAYED'
 TIMEOUT 10
 REPORT CONNECT
+
 # Module will send the string AT regardless of the string it receives
 "" AT
+
 # Instructs the modem to disconnect from the line, terminating any call in progress. All of the functions of the command shall be completed before the modem returns a result code.
 OK ATH
+
 # Instructs the modem to set all parameters to the factory defaults.
 OK ATZ
+
 # Result codes are sent to the Data Terminal Equipment (DTE).
 OK ATQ0
-OK AT+CGACT=1,1
-OK AT+CGATT=1
-OK AT+COPS=2
+
+# who are we?
+OK ATI1
+
+# are we connected
+OK AT+CGACT?
+
+# perform a detatch
+OK AT+CGACT=0
+
+# are we connected
+OK AT+CGACT?
+
+# perform a detatch
+OK AT+CGACT=0
+
+# are we connected
+OK AT+CGACT?
+
 # Define PDP context 
-OK AT+CGDCONT=1,"IPV4V6","wireless.twilio.com"
+OK AT+CGDCONT=1,"IP","wireless.twilio.com"
+
 # ATDT = Attention Dial Tone
 OK ATDT*99***1#
+
 # Don't send any more strings when it receives the string CONNECT. Module considers the data links as having been set up.
 CONNECT ''
 EOF
 
-cat <<EOF > /etc/ppp/peers/gprs
-/dev/station_modem 460800
+cat <<EOF > /etc/chatscripts/disconnect
+# Name: gprs-disconnect-chat
+# Purpose: GPRS PPP Disconnect Script
+# Notes: CHAT is used to issue modem AT commands.  See CHAT man pages for more info.
+#
+exec /usr/sbin/chat -V -s -S \
+ABORT "BUSY" \
+ABORT "ERROR" \
+ABORT "NO DIALTONE" \
+SAY "n\Sending break to the modem\n" \
+"" "\K" \
+"" "\K" \
+"" "\K" \
+"" "+++ATH" \
+"" "+++ATH" \
+"" "+++ATH" \
+SAY "\nPDP context detached\n"
+EOF
+
+
+cat <<EOF > /etc/ppp/peers/twilio
+
 # The chat script, customize your APN in this file
-connect 'chat -s -v -f /etc/chatscripts/simcom-chat-connect '
+
+# modem serial 
+/dev/station_modem 921600
+
+connect 'chat -s -v -f /etc/chatscripts/twilio'
+
 # The close script
-disconnect 'chat -s -v -f /etc/chatscripts/simcom-chat-disconnect'
+disconnect 'chat -s -v -f /etc/chatscripts/disconnect'
+
 # Hide password in debug messages
 hide-password
 # The phone is not required to authenticate
@@ -55,6 +105,7 @@ noauth
 debug
 # If you want to use the HSDPA link as your gateway
 defaultroute
+replacedefaultroute
 # pppd must not propose any IP address to the peer
 noipdefault
 # No ppp compression
@@ -81,5 +132,8 @@ persist
 #holdoff 600
 #nolog
 EOF
+
+rm /etc/ppp/peers/gprs
+ln -s /etc/ppp/peers/twilio /etc/ppp/peers/gprs
 
 reboot
