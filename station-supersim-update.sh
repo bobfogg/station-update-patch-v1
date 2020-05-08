@@ -56,7 +56,7 @@ OK AT+CGACT=0
 OK AT+CGACT?
 
 # Define PDP context 
-OK AT+CGDCONT=1,"IP","super"
+"" AT+CGDCONT=1,"IP","super"
 
 # ATDT = Attention Dial Tone
 OK ATDT*99***1#
