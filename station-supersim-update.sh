@@ -44,13 +44,13 @@ OK ATI1
 OK AT+CGACT?
 
 # perform a detatch
-OK AT+CGACT=0
+"" AT+CGACT=0
 
 # are we connected
 OK AT+CGACT?
 
 # perform a detatch
-OK AT+CGACT=0
+"" AT+CGACT=0
 
 # are we connected
 OK AT+CGACT?
