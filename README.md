@@ -1,7 +1,10 @@
 # Update Scripts for CTT Sensor Station v1
 
 ## station-lte-modem.sh
-* use a [Zoom 4625 USB Modem](http://www.zoomtel.com/techsupport/cell-modems/4625-4626/)
+* use a [Zoom 4625 USB Modem](http://www.zoomtel.com/techsupport/cell-modems/4625-4626/) with a regular sim
+
+## station-supersim-update.sh
+* enable a [Zoom 4625 USB Modem](http://www.zoomtel.com/techsupport/cell-modems/4625-4626/) with a supersim 
 
 ## station-2g-modem.sh
 * use the on board 2g modem
@@ -27,7 +30,12 @@
 * daemonize LCD driver as systemd script  station-lcd.service
 * enable on boot; restart driver on crash;
 * reboot if i2c0 bus was modified or enabled
+
+## station-shut-2g-modem-off.sh
+* this shuts off the 2G modem which may cause issues when operating in certain network conditions
+
 ### manage systemd script
 `sudo systemctl [start|stop|restart|status] station-lcd`
+
 ### view station lcd log
 `journalct -u station-lcd`
